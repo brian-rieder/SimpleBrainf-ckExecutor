@@ -2,7 +2,45 @@
 #include <stdlib.h>
 #include <string.h>
 
-// commands listing: http://esoteric.sange.fi/brainfuck/impl/interp/i.html
+/* ________________________Brainf*ck Command Listing________________________
+ * |         |                                                             | 
+ * |    >    |  increment pointer                                          |
+ * |_________|_____________________________________________________________|
+ * |         |                                                             |
+ * |    <    |  decrement pointer                                          |
+ * |_________|_____________________________________________________________|
+ * |         |                                                             |
+ * |    +    |  increment value at pointer                                 |
+ * |_________|_____________________________________________________________|
+ * |         |                                                             |
+ * |    -    |  decrement value at pointer                                 |
+ * |_________|_____________________________________________________________|
+ * |         |                                                             |
+ * |    [    |  begin loop (continues while value at pointer is non-zero)  |
+ * |_________|_____________________________________________________________|
+ * |         |                                                             |
+ * |    ]    |  end loop                                                   |
+ * |_________|_____________________________________________________________|
+ * |         |                                                             |
+ * |    ,    |  read one character from input into value at pointer        |
+ * |_________|_____________________________________________________________|
+ * |         |                                                             |
+ * |    .    |  print value at pointer to output as specified by mode      |
+ * |_________|_____________________________________________________________|
+ * |         |                                                             |
+ * |    #    |  display debugging info                                     |
+ * |_________|_____________________________________________________________|
+*/
+
+#define INCPTR_CMD '>'
+#define DECPTR_CMD '<'
+#define INCVAL_CMD '+'
+#define DECVAL_CMD '-'
+#define STLOOP_CMD '['
+#define ENDLOOP_CMD ']'
+#define READCH_CMD ','
+#define PRINTCH_CMD '.'
+#define DEBUG_INFO '#'
 
 void printHelp() 
 {
@@ -20,7 +58,8 @@ void printHelp()
 	   "ASCII Mode:"
 	   "\n    Interprets all values in cells as ASCII characters for purposes of printing."
 	   "Integer Mode:"
-	   "\n    Interprets all values in cells as integers for purposes of printing.\n");
+	   "\n    Interprets all values in cells as integers for purposes of printing.\n"
+	   "A prompt will (as of now) always appear prompting for potential input to use.\n");
 	exit(1);
 }
 
@@ -54,5 +93,11 @@ int main(int argc, char * * argv)
 	FILE * input_file;
 	// Validate command line input -- retrieve flags and file
 	parseCmdLineInput(argc, argv, &ascii_flag, &integer_flag, &input_file);
+	// Prompt user for input:
+	char user_input[256];
+	printf("Input: ");
+	scanf("%s", &user_input);
+	
+
 	return 0;
 }
