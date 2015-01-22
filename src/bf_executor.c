@@ -1,10 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
+// commands listing: http://esoteric.sange.fi/brainfuck/impl/interp/i.html
 
 void printHelp() 
 {
 	printf("Simple Brainf*ck Executor (by Brian Rieder, January 2015)\n"
-	   "Usage: bfexec [--help] [--ascii] [--integer] [FILE]\n"
+	   "Usage: bfexec [--ascii] [--integer] [FILE]\n"
 	   "When a number of arguments not equal to three is input, this message\n"
 	   "will be displayed. Three arguments should always be input, as the\n"
 	   "compiler command, a mode switch, and the file name.\n"
@@ -21,18 +24,35 @@ void printHelp()
 	exit(1);
 }
 
-void parseCmdLineInput(int num_args, char * * args)
+void parseCmdLineInput(int num_args, char * * args, int * ascii_flag, int * integer_flag, FILE * * input_file)
 {
-	int helpflag = 0;
-	if(num_args != 3) {
-		helpflag = 1;
+	// Check number of arguments -- a flag and file are the only format allowed
+	if(num_args != 3)
+		printHelp();
+	// Check and set flags
+	if(strcmp("--ascii", args[1]) == 0 || strcmp("-a", args[1]) || strcmp("--ascii", args[2]) == 0 || strcmp("-a", args[2]))
+		*ascii_flag = 1;
+	else if(strcmp("--integer", args[1]) == 0 || strcmp("-i", args[1]) || strcmp("--integer", args[2]) == 0 || strcmp("-i", args[2]))
+		*integer_flag = 1;
+	if((*ascii_flag && *integer_flag) || (!(*ascii_flag) && !(*integer_flag)))
+		printHelp();
+	// Check file extension -- otherwise open it
+	if(strcmp(".bf", &(args[1][strlen(args[1]) - 3])) == 0) {
+		*input_file = fopen(args[1], "r");
 	}
-	if(helpflag == 1)
+	else if(strcmp(".bf", &(args[2][strlen(args[2]) - 3])) == 0) {
+		*input_file = fopen(args[2], "r");
+	}
+	else
 		printHelp();
 }
 
 int main(int argc, char * * argv)
 {
-	parseCmdLineInput(argc, argv);
+	int ascii_flag = 0;
+	int integer_flag = 0;
+	FILE * input_file;
+	// Validate command line input -- retrieve flags and file
+	parseCmdLineInput(argc, argv, &ascii_flag, &integer_flag, &input_file);
 	return 0;
 }
