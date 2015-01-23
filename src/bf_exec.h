@@ -52,6 +52,7 @@
  typedef struct {
  	FILE * file_ptr;
  	char val_at_fileptr;
+ 	char val_at_inputind;
  	int curr_mem_index;
  	int curr_inp_index;
  	int * memptr_arr;
