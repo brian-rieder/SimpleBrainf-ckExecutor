@@ -42,6 +42,11 @@
 #define PRINTCH_CMD '.'
 #define DEBUG_INFO '#'
 
+#define FATAL(msg) {													\
+   fprintf(stderr, "FATAL %s:%d %s\n", __FILE__, (int) __LINE__, msg);  \
+   exit(1);															    \
+ }
+
 // File Struct
 
  typedef struct {
@@ -61,3 +66,22 @@ void parseCmdLineInput(int num_args, char * * args, int * ascii_flag, int * inte
 
 BFFile * BFFile_constructor(FILE * * file_ptr, char * * user_input, int * * memptr_arr);
 
+void parseBFFile_ascii(BFFile * bfptr);
+
+void parseBFFile_integer(BFFile * bfptr);
+
+void incptrHandler(BFFile * bfptr);
+
+void decptrHandler(BFFile * bfptr);
+
+void incvalHandler(BFFile * bfptr);
+
+void decvalHandler(BFFile * bfptr);
+
+void startloopHandler(BFFile * bfptr);
+
+void endloopHandler(BFFile * bfptr);
+
+void readchHandler(BFFile * bfptr);
+
+void printchHandler(BFFile * bfptr);
