@@ -57,6 +57,7 @@
  	int curr_inp_index;
  	int * memptr_arr;
  	char * user_input;
+ 	unsigned char ascii0_int1;
  } BFFile;
 
 // Function Declarations
@@ -86,3 +87,5 @@ void endloopHandler(BFFile * bfptr);
 void readchHandler(BFFile * bfptr);
 
 void printchHandler(BFFile * bfptr);
+
+void debuginfos(BFFile * bfptr);
