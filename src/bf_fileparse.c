@@ -10,6 +10,7 @@ BFFile * BFFile_constructor(FILE * * file_ptr, char * * user_input, int * * memp
 	bfptr->curr_inp_index = -1;
 	bfptr->memptr_arr = *memptr_arr;
 	bfptr->user_input = *user_input;
+	bfptr->ascii0_int1 = -1;
 	return bfptr;
 }
 
@@ -26,6 +27,7 @@ void debuginfos(BFFile * bfptr)
 
 void parseBFFile_ascii(BFFile * bfptr)
 {
+	bfptr->ascii0_int1 = 0;
 	bfptr->val_at_fileptr = fgetc(bfptr->file_ptr);
 	while(bfptr->val_at_fileptr != EOF) {
 		switch(bfptr->val_at_fileptr) {
@@ -57,12 +59,45 @@ void parseBFFile_ascii(BFFile * bfptr)
 		// Iterate to next character in the file
 		bfptr->val_at_fileptr = fgetc(bfptr->file_ptr);
 	}
-	debuginfos(bfptr);
+	//debuginfos(bfptr);
 }
 
 void parseBFFile_integer(BFFile * bfptr)
 {
-	printf("Integer mode not yet enabled\n");
+	// printf("Integer mode not yet enabled\n");
+	bfptr->ascii0_int1 = 1;
+	bfptr->val_at_fileptr = fgetc(bfptr->file_ptr);
+	while(bfptr->val_at_fileptr != EOF) {
+		switch(bfptr->val_at_fileptr) {
+			case INCPTR_CMD:
+				incptrHandler(bfptr);
+				break;
+			case DECPTR_CMD:
+				decptrHandler(bfptr);
+				break;
+			case INCVAL_CMD:
+				incvalHandler(bfptr);
+				break;
+			case DECVAL_CMD:
+				decvalHandler(bfptr);
+				break;
+			case ENDLOOP_CMD:
+				endloopHandler(bfptr);
+				break;
+			case STLOOP_CMD:
+				startloopHandler(bfptr);
+				break;
+			case READCH_CMD:
+				readchHandler(bfptr);
+				break;
+			case PRINTCH_CMD:
+				printchHandler(bfptr);
+				break;
+		}
+		// Iterate to next character in the file
+		bfptr->val_at_fileptr = fgetc(bfptr->file_ptr);
+	}
+	//debuginfos(bfptr);
 }
 
 void incptrHandler(BFFile * bfptr)
@@ -130,8 +165,8 @@ void startloopHandler(BFFile * bfptr)
 		if(*iterator != 0) {
 			fseek(bfptr->file_ptr, (-1) * cmd_count, SEEK_CUR);
 			cmd_count = 1;
+			bfptr->val_at_fileptr = fgetc(bfptr->file_ptr);
 		}
-		bfptr->val_at_fileptr = fgetc(bfptr->file_ptr);
 	}
 }
 
@@ -143,11 +178,17 @@ void endloopHandler(BFFile * bfptr)
 void readchHandler(BFFile * bfptr)
 {
 	++bfptr->curr_inp_index;
-	bfptr->val_at_inputind = bfptr->user_input[curr_inp_index];
-	bfptr->memptr_arr[curr_mem_index] = bfptr->val_at_inputind;
+	bfptr->val_at_inputind = bfptr->user_input[bfptr->curr_inp_index];
+	bfptr->memptr_arr[bfptr->curr_mem_index] = bfptr->val_at_inputind;
 }
 
 void printchHandler(BFFile * bfptr)
 {
-
+	//debuginfos(bfptr);
+	if(bfptr->ascii0_int1 == 0)
+		printf("%c", bfptr->memptr_arr[bfptr->curr_mem_index]);
+	else if(bfptr->ascii0_int1 == 1)
+		printf("%d", bfptr->memptr_arr[bfptr->curr_mem_index]);
+	else
+		FATAL("Flag error -- aborting.")
 }
