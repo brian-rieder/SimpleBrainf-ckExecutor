@@ -27,9 +27,11 @@ void parseCmdLineInput(int num_args, char * * args, int * ascii_flag, int * inte
 	if(num_args != 3)
 		printHelp();
 	// Check and set flags
-	if(strcmp("--ascii", args[1]) == 0 || strcmp("-a", args[1]) || strcmp("--ascii", args[2]) == 0 || strcmp("-a", args[2]))
+	if(strcmp("--ascii", args[1]) == 0 || strcmp("-a", args[1]) == 0 
+		|| strcmp("--ascii", args[2]) == 0 || strcmp("-a", args[2]) == 0)
 		*ascii_flag = 1;
-	else if(strcmp("--integer", args[1]) == 0 || strcmp("-i", args[1]) || strcmp("--integer", args[2]) == 0 || strcmp("-i", args[2]))
+	else if(strcmp("--integer", args[1]) == 0 || strcmp("-i", args[1]) == 0 
+		|| strcmp("--integer", args[2]) == 0 || strcmp("-i", args[2]) == 0)
 		*integer_flag = 1;
 	if((*ascii_flag && *integer_flag) || (!(*ascii_flag) && !(*integer_flag)))
 		printHelp();
