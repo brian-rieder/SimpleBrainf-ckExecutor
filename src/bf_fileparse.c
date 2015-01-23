@@ -55,6 +55,9 @@ void parseBFFile_ascii(BFFile * bfptr)
 			case PRINTCH_CMD:
 				printchHandler(bfptr);
 				break;
+			case DEBUG_INFO:
+				debuginfos(bfptr);
+				break;
 		}
 		// Iterate to next character in the file
 		bfptr->val_at_fileptr = fgetc(bfptr->file_ptr);
@@ -93,6 +96,9 @@ void parseBFFile_integer(BFFile * bfptr)
 			case PRINTCH_CMD:
 				printchHandler(bfptr);
 				break;
+			case DEBUG_INFO:
+				debuginfos(bfptr);
+				break;
 		}
 		// Iterate to next character in the file
 		bfptr->val_at_fileptr = fgetc(bfptr->file_ptr);
@@ -126,7 +132,7 @@ void decvalHandler(BFFile * bfptr)
 
 void startloopHandler(BFFile * bfptr)
 {
-	int cmd_count = 1;
+	long int loop_start = ftell(bfptr->file_ptr);
 	int * iterator = &(bfptr->memptr_arr[bfptr->curr_mem_index]);
 	bfptr->val_at_fileptr = fgetc(bfptr->file_ptr);
 	while(*iterator > 0)
@@ -157,14 +163,15 @@ void startloopHandler(BFFile * bfptr)
 				case EOF:
 					FATAL("No loop terminator found before EOF -- aborting.")
 					break;
+				case DEBUG_INFO:
+					debuginfos(bfptr);
+					break;
 			}
-			++cmd_count;
 			bfptr->val_at_fileptr = fgetc(bfptr->file_ptr);
 		}
 		iterator = &(bfptr->memptr_arr[bfptr->curr_mem_index]);
 		if(*iterator != 0) {
-			fseek(bfptr->file_ptr, (-1) * cmd_count, SEEK_CUR);
-			cmd_count = 1;
+			fseek(bfptr->file_ptr, loop_start - ftell(bfptr->file_ptr), SEEK_CUR);
 			bfptr->val_at_fileptr = fgetc(bfptr->file_ptr);
 		}
 	}
@@ -188,7 +195,7 @@ void printchHandler(BFFile * bfptr)
 	if(bfptr->ascii0_int1 == 0)
 		printf("%c", bfptr->memptr_arr[bfptr->curr_mem_index]);
 	else if(bfptr->ascii0_int1 == 1)
-		printf("%d", bfptr->memptr_arr[bfptr->curr_mem_index]);
+		printf("%c", bfptr->memptr_arr[bfptr->curr_mem_index] + '0');
 	else
 		FATAL("Flag error -- aborting.")
 }
