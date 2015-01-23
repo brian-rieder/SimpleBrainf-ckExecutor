@@ -42,7 +42,22 @@
 #define PRINTCH_CMD '.'
 #define DEBUG_INFO '#'
 
+// File Struct
+
+ typedef struct {
+ 	FILE * file_ptr;
+ 	char val_at_fileptr;
+ 	int curr_mem_index;
+ 	int curr_inp_index;
+ 	int * memptr_arr;
+ 	char * user_input;
+ } BFFile;
+
 // Function Declarations
 
 void printHelp();
+
 void parseCmdLineInput(int num_args, char * * args, int * ascii_flag, int * integer_flag, FILE * * input_file);
+
+BFFile * BFFile_constructor(FILE * * file_ptr, char * * user_input, int * * memptr_arr);
+
